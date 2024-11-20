@@ -8,6 +8,8 @@ import { UserComponent } from "./app/users/user/user.component";
 import { UsersComponent } from "./app/users/users.component";
 import { NgModule } from "@angular/core";
 import { authChildGuard, authGuard } from "./auth-service.service";
+import { CanDeactivateGuardService } from "./app/servers/edit-server/can-deactivate-guard.service";
+import { ServerResolverService } from "./app/servers/server/server-resolver.service";
 
 export const appRoutes: Routes = [
   { path: "", component: HomeComponent },
@@ -22,8 +24,16 @@ export const appRoutes: Routes = [
     canActivate: [authGuard],
     canActivateChild: [authChildGuard],
     children: [
-      { path: ":id", component: ServerComponent },
-      { path: ":id/edit", component: EditServerComponent },
+      {
+        path: ":id",
+        component: ServerComponent,
+        resolve: { server: ServerResolverService },
+      },
+      {
+        path: ":id/edit",
+        component: EditServerComponent,
+        canDeactivate: [CanDeactivateGuardService],
+      },
     ],
   },
   {
